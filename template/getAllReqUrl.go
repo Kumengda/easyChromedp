@@ -30,10 +30,12 @@ func getWebsiteAllReq(timeout int, websites string, printLog bool, option ...chr
 		switch ev := ev.(type) {
 		case *network.EventRequestWillBeSent:
 			reqUrl := ev.Request.URL
-			if strings.Contains(reqUrl, "?") {
-				reqUrl = reqUrl[:strings.Index(reqUrl, "?")]
+			//if strings.Contains(reqUrl, "?") {
+			//	reqUrl = reqUrl[:strings.Index(reqUrl, "?")]
+			//}
+			if strings.HasPrefix(reqUrl, "http") {
+				allReqUrl = append(allReqUrl, reqUrl)
 			}
-			allReqUrl = append(allReqUrl, reqUrl)
 			if printLog {
 				MainInsp.Print(LEVEL_DEBUG, Text(fmt.Sprintf("req url %s", ev.Request.URL)))
 			}
@@ -91,9 +93,9 @@ func getWebsiteAllHrefByJs(timeout int, websites string, printLog bool, option .
 		return nil, err
 	}
 	for _, u := range onclickUrl {
-		if strings.Contains(u, "?") {
-			u = u[:strings.Index(u, "?")]
-		}
+		//if strings.Contains(u, "?") {
+		//	u = u[:strings.Index(u, "?")]
+		//}
 		if strings.HasPrefix(u, "//") {
 			allOnclickUrl = append(allOnclickUrl, scheme+":"+u)
 			continue

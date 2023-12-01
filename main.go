@@ -8,25 +8,28 @@ import (
 
 func main() {
 	templates, err := template.NewChromedpTemplates(
-		"https://help.mail.163.com/",
+		"https://www.baidu.com",
 		10,
 		false,
 		chromedp.Flag("headless", true),
+		chromedp.DisableGPU,
+		chromedp.NoDefaultBrowserCheck,
 	)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	origin, err := templates.GetWebsiteAllHrefByJsWithSameOrigin()
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	for _, v := range origin {
-		fmt.Println(v)
-	}
 
-	origin2, err := templates.GetWebsiteAllReqWithSameOrigin()
+	//origin, err := templates.GetWebsiteAllHrefByJsWithSameOrigin()
+	//if err != nil {
+	//	fmt.Println(err)
+	//	return
+	//}
+	//for _, v := range origin {
+	//	fmt.Println(v)
+	//}
+
+	origin2, err := templates.GetWebsiteAllReq()
 	if err != nil {
 		fmt.Println(err)
 		return
