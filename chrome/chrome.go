@@ -62,7 +62,7 @@ func (c *Chrome) Close() {
 	for _, v := range c.cancels {
 		v()
 	}
-	time.Sleep(1 * time.Second)
+	time.Sleep(3 * time.Second)
 	MainInsp.Print(LEVEL_DEBUG, Text("尝试删除文件"+c.tmpPath))
 	err := os.RemoveAll(c.tmpPath)
 	if err != nil {
