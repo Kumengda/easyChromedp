@@ -8,9 +8,10 @@ import (
 
 func main() {
 	templates, err := template.NewChromedpTemplates(
-		"https://www.baidu.com",
+		"https://easm.huaun.com:443",
 		10,
-		false,
+		true,
+		5,
 		chromedp.Flag("headless", true),
 		chromedp.DisableGPU,
 		chromedp.NoDefaultBrowserCheck,

@@ -10,9 +10,10 @@ import (
 	"github.com/chromedp/chromedp"
 	"net/url"
 	"strings"
+	"time"
 )
 
-func getWebsiteAllReq(timeout int, websites string, printLog bool, option ...chromedp.ExecAllocatorOption) ([]string, error) {
+func getWebsiteAllReq(timeout int, websites string, printLog bool, waitTime int, option ...chromedp.ExecAllocatorOption) ([]string, error) {
 	_, err := url.Parse(websites)
 	if err != nil {
 		return nil, err
@@ -42,6 +43,7 @@ func getWebsiteAllReq(timeout int, websites string, printLog bool, option ...chr
 		}
 	},
 		chromedp.Navigate(websites),
+		chromedp.Sleep(time.Duration(waitTime)*time.Second),
 	)
 
 	if err != nil {
@@ -53,8 +55,8 @@ func getWebsiteAllReq(timeout int, websites string, printLog bool, option ...chr
 	return allReqUrl, nil
 }
 
-func getWebsiteAllReqWithsameOrigin(timeout int, websites string, printLog bool, option ...chromedp.ExecAllocatorOption) ([]string, error) {
-	allReqUrl, err := getWebsiteAllReq(timeout, websites, printLog, option...)
+func getWebsiteAllReqWithsameOrigin(timeout int, websites string, printLog bool, waitTime int, option ...chromedp.ExecAllocatorOption) ([]string, error) {
+	allReqUrl, err := getWebsiteAllReq(timeout, websites, printLog, waitTime, option...)
 	if err != nil {
 		return nil, err
 	}

@@ -8,15 +8,20 @@ import (
 type ChromedpTemplates struct {
 	websites string
 	timeout  int
+	waitTime int
 	printLog bool
 	options  []chromedp.ExecAllocatorOption
 }
 
-func NewChromedpTemplates(target string, timeout int, printLog bool, option ...chromedp.ExecAllocatorOption) (*ChromedpTemplates, error) {
+func NewChromedpTemplates(target string, timeout int, printLog bool, waitTime int, option ...chromedp.ExecAllocatorOption) (*ChromedpTemplates, error) {
 	if target == "" || timeout == 0 {
 		return nil, errors.New("target and timeout must provide")
 	}
+	if waitTime >= timeout {
+		return nil, errors.New("waitTime不可大于等于timeout")
+	}
 	return &ChromedpTemplates{
+		waitTime: waitTime,
 		websites: target,
 		timeout:  timeout,
 		printLog: printLog,
@@ -25,7 +30,7 @@ func NewChromedpTemplates(target string, timeout int, printLog bool, option ...c
 }
 
 func (c *ChromedpTemplates) GetWebsiteAllReq() ([]string, error) {
-	allResUrls, err := getWebsiteAllReq(c.timeout, c.websites, c.printLog, c.options...)
+	allResUrls, err := getWebsiteAllReq(c.timeout, c.websites, c.printLog, c.waitTime, c.options...)
 	if err != nil {
 		return nil, err
 	}
@@ -33,7 +38,7 @@ func (c *ChromedpTemplates) GetWebsiteAllReq() ([]string, error) {
 }
 
 func (c *ChromedpTemplates) GetWebsiteAllReqWithSameOrigin() ([]string, error) {
-	allResultUrlsWithSameOrigin, err := getWebsiteAllReqWithsameOrigin(c.timeout, c.websites, c.printLog, c.options...)
+	allResultUrlsWithSameOrigin, err := getWebsiteAllReqWithsameOrigin(c.timeout, c.websites, c.printLog, c.waitTime, c.options...)
 	if err != nil {
 		return nil, err
 	}
