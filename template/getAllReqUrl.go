@@ -111,12 +111,18 @@ func getWebsiteAllHrefByJs(timeout int, websites string, printLog bool, headers 
 	}
 
 	for _, v := range fromDatas {
-		var param []string
-		for k, _ := range v.FormData {
-			param = append(param, k)
+		var param map[string]string
+		for k, v1 := range v.FormData {
+			param[k] = v1
+		}
+		var fromUrl string
+		if v.Action == "#" || v.Action == "/" || v.Action == "" {
+			fromUrl = websites
+		} else {
+			fromUrl = parseJsData(v.Action, scheme, host)
 		}
 		allOnclickUrl = append(allOnclickUrl, JsRes{
-			Url:    parseJsData(v.Action, scheme, host),
+			Url:    fromUrl,
 			Method: strings.ToUpper(v.Method),
 			IsForm: true,
 			Param:  param,

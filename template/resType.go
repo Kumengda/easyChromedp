@@ -8,6 +8,6 @@ type FromData struct {
 type JsRes struct {
 	Url    string
 	Method string
-	Param  []string
+	Param  map[string]string
 	IsForm bool
 }
