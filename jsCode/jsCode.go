@@ -14,9 +14,11 @@ var clickableElements = document.querySelectorAll('a, button, input[type="button
 			} else if (element.tagName.toLowerCase() === 'button') {
 				elementValue = element.textContent;
 			} else {
-				elementValue = element.getAttribute('aria-label') || element.textContent;
+				elementValue = element.getAttribute('aria-label');
 			}
-			elementValues.push(elementValue);
+			if (elementValue!==null&&elementValue!==""){
+				elementValues.push(elementValue);
+			}
 		});
 		elementValues;
 `

@@ -114,6 +114,7 @@ func getWebsiteAllHrefByJs(timeout int, websites string, printLog bool, headers 
 			allOnclickUrl = append(allOnclickUrl, u)
 			continue
 		}
+		allOnclickUrl = append(allOnclickUrl, scheme+"://"+host+"/"+u)
 	}
 	myChrome.Close()
 	return utils.RemoveDuplicateStrings(allOnclickUrl), nil
