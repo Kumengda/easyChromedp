@@ -7,11 +7,13 @@ import (
 )
 
 func main() {
+
 	templates, err := template.NewChromedpTemplates(
-		"https://easm.huaun.com:443",
+		"https://www.baidu.com",
 		10,
 		true,
 		5,
+		map[string]interface{}{},
 		chromedp.Flag("headless", true),
 		chromedp.DisableGPU,
 		chromedp.NoDefaultBrowserCheck,
@@ -30,7 +32,7 @@ func main() {
 	//	fmt.Println(v)
 	//}
 
-	origin2, err := templates.GetWebsiteAllReq()
+	origin2, err := templates.GetWebsiteAllHrefByJs()
 	if err != nil {
 		fmt.Println(err)
 		return

@@ -10,10 +10,11 @@ type ChromedpTemplates struct {
 	timeout  int
 	waitTime int
 	printLog bool
+	headers  map[string]interface{}
 	options  []chromedp.ExecAllocatorOption
 }
 
-func NewChromedpTemplates(target string, timeout int, printLog bool, waitTime int, option ...chromedp.ExecAllocatorOption) (*ChromedpTemplates, error) {
+func NewChromedpTemplates(target string, timeout int, printLog bool, waitTime int, headers map[string]interface{}, option ...chromedp.ExecAllocatorOption) (*ChromedpTemplates, error) {
 	if target == "" || timeout == 0 {
 		return nil, errors.New("target and timeout must provide")
 	}
@@ -26,11 +27,12 @@ func NewChromedpTemplates(target string, timeout int, printLog bool, waitTime in
 		timeout:  timeout,
 		printLog: printLog,
 		options:  option,
+		headers:  headers,
 	}, nil
 }
 
 func (c *ChromedpTemplates) GetWebsiteAllReq() ([]string, error) {
-	allResUrls, err := getWebsiteAllReq(c.timeout, c.websites, c.printLog, c.waitTime, c.options...)
+	allResUrls, err := getWebsiteAllReq(c.timeout, c.websites, c.printLog, c.waitTime, c.headers, c.options...)
 	if err != nil {
 		return nil, err
 	}
@@ -38,7 +40,7 @@ func (c *ChromedpTemplates) GetWebsiteAllReq() ([]string, error) {
 }
 
 func (c *ChromedpTemplates) GetWebsiteAllReqWithSameOrigin() ([]string, error) {
-	allResultUrlsWithSameOrigin, err := getWebsiteAllReqWithsameOrigin(c.timeout, c.websites, c.printLog, c.waitTime, c.options...)
+	allResultUrlsWithSameOrigin, err := getWebsiteAllReqWithsameOrigin(c.timeout, c.websites, c.printLog, c.waitTime, c.headers, c.options...)
 	if err != nil {
 		return nil, err
 	}
@@ -46,14 +48,14 @@ func (c *ChromedpTemplates) GetWebsiteAllReqWithSameOrigin() ([]string, error) {
 }
 
 func (c *ChromedpTemplates) GetWebsiteAllHrefByJs() ([]string, error) {
-	allOnclickHref, err := getWebsiteAllHrefByJs(c.timeout, c.websites, c.printLog, c.options...)
+	allOnclickHref, err := getWebsiteAllHrefByJs(c.timeout, c.websites, c.printLog, c.headers, c.options...)
 	if err != nil {
 		return nil, err
 	}
 	return allOnclickHref, err
 }
 func (c *ChromedpTemplates) GetWebsiteAllHrefByJsWithSameOrigin() ([]string, error) {
-	allOnclickHref, err := getWebsiteAllHrefByJsWithSameOrigin(c.timeout, c.websites, c.printLog, c.options...)
+	allOnclickHref, err := getWebsiteAllHrefByJsWithSameOrigin(c.timeout, c.websites, c.printLog, c.headers, c.options...)
 	if err != nil {
 		return nil, err
 	}

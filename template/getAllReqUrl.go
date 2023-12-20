@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-func getWebsiteAllReq(timeout int, websites string, printLog bool, waitTime int, option ...chromedp.ExecAllocatorOption) ([]string, error) {
+func getWebsiteAllReq(timeout int, websites string, printLog bool, waitTime int, headers map[string]interface{}, option ...chromedp.ExecAllocatorOption) ([]string, error) {
 	_, err := url.Parse(websites)
 	if err != nil {
 		return nil, err
@@ -42,6 +42,8 @@ func getWebsiteAllReq(timeout int, websites string, printLog bool, waitTime int,
 			}
 		}
 	},
+		network.Enable(),
+		network.SetExtraHTTPHeaders(headers),
 		chromedp.Navigate(websites),
 		chromedp.Sleep(time.Duration(waitTime)*time.Second),
 	)
@@ -55,8 +57,8 @@ func getWebsiteAllReq(timeout int, websites string, printLog bool, waitTime int,
 	return allReqUrl, nil
 }
 
-func getWebsiteAllReqWithsameOrigin(timeout int, websites string, printLog bool, waitTime int, option ...chromedp.ExecAllocatorOption) ([]string, error) {
-	allReqUrl, err := getWebsiteAllReq(timeout, websites, printLog, waitTime, option...)
+func getWebsiteAllReqWithsameOrigin(timeout int, websites string, printLog bool, waitTime int, headers map[string]interface{}, option ...chromedp.ExecAllocatorOption) ([]string, error) {
+	allReqUrl, err := getWebsiteAllReq(timeout, websites, printLog, waitTime, headers, option...)
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +66,7 @@ func getWebsiteAllReqWithsameOrigin(timeout int, websites string, printLog bool,
 	return utils.RemoveDuplicateStrings(sameOriginUrl), nil
 }
 
-func getWebsiteAllHrefByJs(timeout int, websites string, printLog bool, option ...chromedp.ExecAllocatorOption) ([]string, error) {
+func getWebsiteAllHrefByJs(timeout int, websites string, printLog bool, headers map[string]interface{}, option ...chromedp.ExecAllocatorOption) ([]string, error) {
 	_, err := url.Parse(websites)
 	if err != nil {
 		return nil, err
@@ -86,6 +88,8 @@ func getWebsiteAllHrefByJs(timeout int, websites string, printLog bool, option .
 		return nil, err
 	}
 	err = myChrome.RunWithOutListen(
+		network.Enable(),
+		network.SetExtraHTTPHeaders(headers),
 		chromedp.Navigate(websites),
 		chromedp.Evaluate(jsCode.GetAllOnclickUrl, &onclickUrl),
 	)
@@ -115,8 +119,8 @@ func getWebsiteAllHrefByJs(timeout int, websites string, printLog bool, option .
 	return utils.RemoveDuplicateStrings(allOnclickUrl), nil
 }
 
-func getWebsiteAllHrefByJsWithSameOrigin(timeout int, websites string, printLog bool, option ...chromedp.ExecAllocatorOption) ([]string, error) {
-	allHref, err := getWebsiteAllHrefByJs(timeout, websites, printLog, option...)
+func getWebsiteAllHrefByJsWithSameOrigin(timeout int, websites string, printLog bool, headers map[string]interface{}, option ...chromedp.ExecAllocatorOption) ([]string, error) {
+	allHref, err := getWebsiteAllHrefByJs(timeout, websites, printLog, headers, option...)
 	if err != nil {
 		return nil, err
 	}
