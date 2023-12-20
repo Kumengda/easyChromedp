@@ -117,7 +117,7 @@ func getWebsiteAllHrefByJs(timeout int, websites string, printLog bool, headers 
 		}
 		allOnclickUrl = append(allOnclickUrl, JsRes{
 			Url:    parseJsData(v.Action, scheme, host),
-			Method: "",
+			Method: strings.ToUpper(v.Method),
 			IsForm: true,
 			Param:  param,
 		})
