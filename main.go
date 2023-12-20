@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	. "github.com/Kumengda/easyChromedp/runtime"
 	"github.com/Kumengda/easyChromedp/template"
 	"github.com/chromedp/chromedp"
 )
@@ -9,12 +10,12 @@ import (
 func main() {
 
 	templates, err := template.NewChromedpTemplates(
-		"http://127.0.0.1:9999",
+		"http://127.0.0.1:9999/vulnerabilities/sqli/",
 		10,
 		true,
 		5,
 		map[string]interface{}{"Cookie": "PHPSESSID=0orsrs37tjva2opouppr9agvn1; security=low;"},
-		chromedp.Flag("headless", true),
+		chromedp.Flag("headless", false),
 		chromedp.DisableGPU,
 		chromedp.NoDefaultBrowserCheck,
 	)
@@ -38,6 +39,6 @@ func main() {
 		return
 	}
 	for _, v := range origin2 {
-		fmt.Println(v)
+		MainInsp.Print(Json(v))
 	}
 }

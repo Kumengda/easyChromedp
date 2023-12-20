@@ -47,7 +47,7 @@ func (c *ChromedpTemplates) GetWebsiteAllReqWithSameOrigin() ([]string, error) {
 	return allResultUrlsWithSameOrigin, err
 }
 
-func (c *ChromedpTemplates) GetWebsiteAllHrefByJs() ([]string, error) {
+func (c *ChromedpTemplates) GetWebsiteAllHrefByJs() ([]JsRes, error) {
 	allOnclickHref, err := getWebsiteAllHrefByJs(c.timeout, c.websites, c.printLog, c.headers, c.options...)
 	if err != nil {
 		return nil, err

@@ -66,12 +66,12 @@ func getWebsiteAllReqWithsameOrigin(timeout int, websites string, printLog bool,
 	return utils.RemoveDuplicateStrings(sameOriginUrl), nil
 }
 
-func getWebsiteAllHrefByJs(timeout int, websites string, printLog bool, headers map[string]interface{}, option ...chromedp.ExecAllocatorOption) ([]string, error) {
+func getWebsiteAllHrefByJs(timeout int, websites string, printLog bool, headers map[string]interface{}, option ...chromedp.ExecAllocatorOption) ([]JsRes, error) {
 	_, err := url.Parse(websites)
 	if err != nil {
 		return nil, err
 	}
-	var allOnclickUrl []string
+	var allOnclickUrl []JsRes
 	parse, err := url.Parse(websites)
 	if err != nil {
 		return nil, err
@@ -79,6 +79,8 @@ func getWebsiteAllHrefByJs(timeout int, websites string, printLog bool, headers 
 	host := parse.Host
 	scheme := parse.Scheme
 	var onclickUrl []string
+
+	var fromDatas []FromData
 	myChrome, err := chrome.NewChromeWithTimout(
 		timeout,
 		option...,
@@ -92,32 +94,36 @@ func getWebsiteAllHrefByJs(timeout int, websites string, printLog bool, headers 
 		network.SetExtraHTTPHeaders(headers),
 		chromedp.Navigate(websites),
 		chromedp.Evaluate(jsCode.GetAllOnclickUrl, &onclickUrl),
+		chromedp.Evaluate(jsCode.ParseFrom, &fromDatas),
 	)
 
 	if err != nil {
 		myChrome.Close()
 		return nil, err
 	}
+	onclickUrl = utils.RemoveDuplicateStrings(onclickUrl)
 	for _, u := range onclickUrl {
-		//if strings.Contains(u, "?") {
-		//	u = u[:strings.Index(u, "?")]
-		//}
-		if strings.HasPrefix(u, "//") {
-			allOnclickUrl = append(allOnclickUrl, scheme+":"+u)
-			continue
+		allOnclickUrl = append(allOnclickUrl, JsRes{
+			Url:    parseJsData(u, scheme, host),
+			Method: "GET",
+			Param:  nil,
+		})
+	}
+
+	for _, v := range fromDatas {
+		var param []string
+		for k, _ := range v.FormData {
+			param = append(param, k)
 		}
-		if strings.HasPrefix(u, "/") {
-			allOnclickUrl = append(allOnclickUrl, scheme+"://"+host+u)
-			continue
-		}
-		if strings.HasPrefix(u, "http") {
-			allOnclickUrl = append(allOnclickUrl, u)
-			continue
-		}
-		allOnclickUrl = append(allOnclickUrl, scheme+"://"+host+"/"+u)
+		allOnclickUrl = append(allOnclickUrl, JsRes{
+			Url:    parseJsData(v.Action, scheme, host),
+			Method: "",
+			IsForm: true,
+			Param:  param,
+		})
 	}
 	myChrome.Close()
-	return utils.RemoveDuplicateStrings(allOnclickUrl), nil
+	return allOnclickUrl, nil
 }
 
 func getWebsiteAllHrefByJsWithSameOrigin(timeout int, websites string, printLog bool, headers map[string]interface{}, option ...chromedp.ExecAllocatorOption) ([]string, error) {
@@ -127,4 +133,22 @@ func getWebsiteAllHrefByJsWithSameOrigin(timeout int, websites string, printLog 
 	}
 	sameOriginUrl := sameOriginUrlFilter(websites, allHref)
 	return sameOriginUrl, nil
+}
+
+func parseJsData(u, scheme, host string) string {
+
+	//if strings.Contains(u, "?") {
+	//	u = u[:strings.Index(u, "?")]
+	//}
+	if strings.HasPrefix(u, "//") {
+		return scheme + ":" + u
+	}
+	if strings.HasPrefix(u, "/") {
+		return scheme + "://" + host + u
+	}
+	if strings.HasPrefix(u, "http") {
+		return u
+	}
+	return scheme + "://" + host + "/" + u
+
 }
