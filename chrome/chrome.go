@@ -49,6 +49,9 @@ func (c *Chrome) RunWithListen(listenFun func(ev interface{}), action ...chromed
 
 	return nil
 }
+func (c *Chrome) GetContext() context.Context {
+	return c.ctx
+}
 func (c *Chrome) RunWithOutListen(action ...chromedp.Action) error {
 	err := chromedp.Run(c.ctx,
 		action...,
@@ -62,13 +65,16 @@ func (c *Chrome) Close() {
 	for _, v := range c.cancels {
 		v()
 	}
-	time.Sleep(3 * time.Second)
-	MainInsp.Print(LEVEL_DEBUG, Text("尝试删除文件"+c.tmpPath))
-	err := os.RemoveAll(c.tmpPath)
-	if err != nil {
-		MainInsp.Print(LEVEL_DEBUG, Text("删除文件失败"+c.tmpPath+err.Error()))
-	} else {
-		MainInsp.Print(LEVEL_DEBUG, Text("删除文件成功"+c.tmpPath))
+	for {
+		time.Sleep(3 * time.Second)
+		MainInsp.Print(LEVEL_DEBUG, Text("尝试删除文件"+c.tmpPath))
+		err := os.RemoveAll(c.tmpPath)
+		if err != nil {
+			MainInsp.Print(LEVEL_DEBUG, Text("删除文件失败,即将重试"+c.tmpPath+err.Error()))
+		} else {
+			MainInsp.Print(LEVEL_DEBUG, Text("删除文件成功"+c.tmpPath))
+			break
+		}
 	}
 }
 func init() {

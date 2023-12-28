@@ -5,7 +5,7 @@ go 1.21.1
 require (
 	github.com/B9O2/Inspector v0.0.12
 	github.com/chromedp/cdproto v0.0.0-20231126232103-8e31ff06e23b
-	github.com/chromedp/chromedp v0.9.3
+	github.com/chromedp/chromedp v0.9.2
 )
 
 require (

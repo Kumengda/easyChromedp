@@ -10,7 +10,7 @@ import (
 func main() {
 
 	templates, err := template.NewChromedpTemplates(
-		"http://127.0.0.1:9999/login.php",
+		"https://www.baidu.com",
 		10,
 		true,
 		5,
