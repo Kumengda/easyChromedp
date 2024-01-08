@@ -113,7 +113,9 @@ func getWebsiteAllHrefByJs(timeout int, websites string, printLog bool, headers 
 	for _, v := range fromDatas {
 		var param = make(map[string]string)
 		for k, v1 := range v.FormData {
-			param[k] = v1
+			if k != "null" {
+				param[k] = v1
+			}
 		}
 		var fromUrl string
 		if v.Action == "#" || v.Action == "/" || v.Action == "" {
