@@ -19,6 +19,7 @@ func main() {
 		chromedp.DisableGPU,
 		chromedp.NoDefaultBrowserCheck,
 	)
+
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -34,12 +35,13 @@ func main() {
 	//}
 
 	origin2, err := templates.GetWebsiteAllHrefByJs()
+
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
+
 	for _, v := range origin2 {
 		MainInsp.Print(Json(v))
 	}
-
 }

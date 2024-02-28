@@ -11,9 +11,14 @@ import (
 )
 
 type Chrome struct {
-	ctx     context.Context
-	cancels []context.CancelFunc
-	tmpPath string
+	ctx         context.Context
+	cancels     []context.CancelFunc
+	debugModule bool
+	tmpPath     string
+}
+
+func (c *Chrome) EnableDebug() {
+	c.debugModule = true
 }
 
 func NewChromeWithTimout(timeout int, option ...chromedp.ExecAllocatorOption) (*Chrome, error) {
@@ -67,12 +72,18 @@ func (c *Chrome) Close() {
 	}
 	for {
 		time.Sleep(1 * time.Second)
-		MainInsp.Print(LEVEL_DEBUG, Text("尝试删除文件"+c.tmpPath))
+		if c.debugModule {
+			MainInsp.Print(LEVEL_DEBUG, Text("尝试删除文件"+c.tmpPath))
+		}
 		err := os.RemoveAll(c.tmpPath)
 		if err != nil {
-			MainInsp.Print(LEVEL_DEBUG, Text("删除文件失败,即将重试"+c.tmpPath+err.Error()))
+			if c.debugModule {
+				MainInsp.Print(LEVEL_DEBUG, Text("删除文件失败,即将重试"+c.tmpPath+err.Error()))
+			}
 		} else {
-			MainInsp.Print(LEVEL_DEBUG, Text("删除文件成功"+c.tmpPath))
+			if c.debugModule {
+				MainInsp.Print(LEVEL_DEBUG, Text("删除文件成功"+c.tmpPath))
+			}
 			break
 		}
 	}
