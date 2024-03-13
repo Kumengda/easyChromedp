@@ -10,12 +10,12 @@ import (
 func main() {
 
 	templates, err := template.NewChromedpTemplates(
-		"https://www.baidu.com",
+		"http://127.0.0.1:8765/vul/unsafedownload/down_nba.php",
 		10,
 		true,
 		5,
 		map[string]interface{}{"Cookie": "PHPSESSID=0orsrs37tjva2opouppr9agvn1; security=low;"},
-		chromedp.Flag("headless", false),
+		chromedp.Flag("headless", true),
 		chromedp.DisableGPU,
 		chromedp.NoDefaultBrowserCheck,
 	)
