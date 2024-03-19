@@ -107,16 +107,23 @@ func getWebsiteAllHrefByJs(timeout int, websites string, printLog bool, headers 
 	}
 	for _, v := range fromDatas {
 		var fromUrl string
+		isFileUpload := false
+		for _, vv := range v.FormData {
+			if vv.Type == "file" {
+				isFileUpload = true
+			}
+		}
 		if v.Action == "#" || v.Action == "/" || v.Action == "" {
 			fromUrl = websites
 		} else {
 			fromUrl = parseJsData(v.Action, scheme, host, websites)
 		}
 		allOnclickUrl = append(allOnclickUrl, JsRes{
-			Url:    fromUrl,
-			Method: strings.ToUpper(v.Method),
-			IsForm: true,
-			Param:  v.FormData,
+			Url:          fromUrl,
+			Method:       strings.ToUpper(v.Method),
+			IsForm:       true,
+			Param:        v.FormData,
+			IsFileUpload: isFileUpload,
 		})
 	}
 	myChrome.Close()
