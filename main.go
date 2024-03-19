@@ -10,7 +10,7 @@ import (
 func main() {
 
 	templates, err := template.NewChromedpTemplates(
-		"http://127.0.0.1:8765/vul/unsafedownload/down_nba.php",
+		"http://127.0.0.1:8765/vul/unsafeupload/clientcheck.php",
 		10,
 		true,
 		5,
@@ -42,6 +42,8 @@ func main() {
 	}
 
 	for _, v := range origin2 {
-		MainInsp.Print(Json(v))
+		if v.IsForm {
+			MainInsp.Print(Json(v))
+		}
 	}
 }

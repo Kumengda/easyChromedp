@@ -31,21 +31,27 @@ forms.forEach(function(form) {
     // 获取表单的提交连接、提交方法和提交参数
     var action = form.getAttribute('action');
     var method = form.getAttribute('method') || 'GET'; // 默认为 GET 方法
-    var formData = {};
+    var formData = [];
 
     // 获取表单中的每个字段的名称和值
     var inputs = form.querySelectorAll('input, textarea, select');
+    var formDataList= [];
     inputs.forEach(function(input) {
         var name = input.getAttribute('name');
+        var type=input.getAttribute('type');
         var value = input.value;
-        formData[name] = value;
+        var oneData = {};
+        oneData.name = name;
+        oneData.value=value;
+        oneData.type=type;
+        formDataList.push(oneData);
     });
 
     // 将表单信息放入列表
     var formInfo = {
         action: action,
         method: method,
-        formData: formData
+        formData: formDataList
     };
 
     formList.push(formInfo);

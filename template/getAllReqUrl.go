@@ -67,10 +67,6 @@ func getWebsiteAllReqWithsameOrigin(timeout int, websites string, printLog bool,
 }
 
 func getWebsiteAllHrefByJs(timeout int, websites string, printLog bool, headers map[string]interface{}, option ...chromedp.ExecAllocatorOption) ([]JsRes, error) {
-	_, err := url.Parse(websites)
-	if err != nil {
-		return nil, err
-	}
 	var allOnclickUrl []JsRes
 	parse, err := url.Parse(websites)
 	if err != nil {
@@ -80,7 +76,7 @@ func getWebsiteAllHrefByJs(timeout int, websites string, printLog bool, headers 
 	scheme := parse.Scheme
 	var onclickUrl []string
 
-	var fromDatas []FromData
+	var fromDatas []FormDatas
 	myChrome, err := chrome.NewChromeWithTimout(
 		timeout,
 		option...,
@@ -109,14 +105,7 @@ func getWebsiteAllHrefByJs(timeout int, websites string, printLog bool, headers 
 			Param:  nil,
 		})
 	}
-
 	for _, v := range fromDatas {
-		var param = make(map[string]string)
-		for k, v1 := range v.FormData {
-			if k != "null" {
-				param[k] = v1
-			}
-		}
 		var fromUrl string
 		if v.Action == "#" || v.Action == "/" || v.Action == "" {
 			fromUrl = websites
@@ -127,7 +116,7 @@ func getWebsiteAllHrefByJs(timeout int, websites string, printLog bool, headers 
 			Url:    fromUrl,
 			Method: strings.ToUpper(v.Method),
 			IsForm: true,
-			Param:  param,
+			Param:  v.FormData,
 		})
 	}
 	myChrome.Close()
