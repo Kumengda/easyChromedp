@@ -10,7 +10,7 @@ import (
 func main() {
 
 	templates, err := template.NewChromedpTemplates(
-		"http://127.0.0.1:8765/vul/sqli/sqli_id.php",
+		"http://127.0.0.1:8765/vul/unsafeupload/clientcheck.php",
 		10,
 		true,
 		5,

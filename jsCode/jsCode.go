@@ -45,9 +45,7 @@ forms.forEach(function(form) {
         oneData.name = name;
         oneData.value=value;
         oneData.type=type;
-        if (type==="file") {
-            oneData.enctype=enctype; 
-        }
+		oneData.enctype=enctype;
         formDataList.push(oneData);
     });
 
