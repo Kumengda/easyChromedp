@@ -30,6 +30,7 @@ var forms = document.querySelectorAll('form');
 forms.forEach(function(form) {
     // 获取表单的提交连接、提交方法和提交参数
     var action = form.getAttribute('action');
+    var enctype = form.getAttribute('enctype');
     var method = form.getAttribute('method') || 'GET'; // 默认为 GET 方法
     var formData = [];
 
@@ -44,6 +45,9 @@ forms.forEach(function(form) {
         oneData.name = name;
         oneData.value=value;
         oneData.type=type;
+        if (type==="file") {
+            oneData.enctype=enctype; 
+        }
         formDataList.push(oneData);
     });
 
