@@ -48,14 +48,14 @@ func (c *ChromedpTemplates) GetWebsiteAllReqWithSameOrigin() ([]string, error) {
 }
 
 func (c *ChromedpTemplates) GetWebsiteAllHrefByJs() ([]JsRes, error) {
-	allOnclickHref, err := getWebsiteAllHrefByJs(c.timeout, c.websites, c.printLog, c.headers, c.options...)
+	allOnclickHref, err := getWebsiteAllHrefByJs(c.timeout, c.websites, c.printLog, c.headers, c.waitTime, c.options...)
 	if err != nil {
 		return nil, err
 	}
 	return allOnclickHref, err
 }
 func (c *ChromedpTemplates) GetWebsiteAllHrefByJsWithSameOrigin() ([]string, error) {
-	allOnclickHref, err := getWebsiteAllHrefByJsWithSameOrigin(c.timeout, c.websites, c.printLog, c.headers, c.options...)
+	allOnclickHref, err := getWebsiteAllHrefByJsWithSameOrigin(c.timeout, c.websites, c.printLog, c.headers, c.waitTime, c.options...)
 	if err != nil {
 		return nil, err
 	}

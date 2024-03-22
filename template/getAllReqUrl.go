@@ -66,7 +66,7 @@ func getWebsiteAllReqWithsameOrigin(timeout int, websites string, printLog bool,
 	return utils.RemoveDuplicateStrings(sameOriginUrl), nil
 }
 
-func getWebsiteAllHrefByJs(timeout int, websites string, printLog bool, headers map[string]interface{}, option ...chromedp.ExecAllocatorOption) ([]JsRes, error) {
+func getWebsiteAllHrefByJs(timeout int, websites string, printLog bool, headers map[string]interface{}, waitTime int, option ...chromedp.ExecAllocatorOption) ([]JsRes, error) {
 	var allOnclickUrl []JsRes
 	parse, err := url.Parse(websites)
 	if err != nil {
@@ -89,6 +89,7 @@ func getWebsiteAllHrefByJs(timeout int, websites string, printLog bool, headers 
 		network.Enable(),
 		network.SetExtraHTTPHeaders(headers),
 		chromedp.Navigate(websites),
+		chromedp.Sleep(time.Duration(waitTime)*time.Second),
 		chromedp.Evaluate(jsCode.GetAllOnclickUrl, &onclickUrl),
 		chromedp.Evaluate(jsCode.ParseFrom, &fromDatas),
 	)
@@ -97,6 +98,7 @@ func getWebsiteAllHrefByJs(timeout int, websites string, printLog bool, headers 
 		myChrome.Close()
 		return nil, err
 	}
+	onclickUrl = cleanOnclickUrl(onclickUrl)
 	onclickUrl = utils.RemoveDuplicateStrings(onclickUrl)
 	for _, u := range onclickUrl {
 		allOnclickUrl = append(allOnclickUrl, JsRes{
@@ -130,8 +132,8 @@ func getWebsiteAllHrefByJs(timeout int, websites string, printLog bool, headers 
 	return allOnclickUrl, nil
 }
 
-func getWebsiteAllHrefByJsWithSameOrigin(timeout int, websites string, printLog bool, headers map[string]interface{}, option ...chromedp.ExecAllocatorOption) ([]string, error) {
-	allHref, err := getWebsiteAllHrefByJs(timeout, websites, printLog, headers, option...)
+func getWebsiteAllHrefByJsWithSameOrigin(timeout int, websites string, printLog bool, headers map[string]interface{}, waitTime int, option ...chromedp.ExecAllocatorOption) ([]string, error) {
+	allHref, err := getWebsiteAllHrefByJs(timeout, websites, printLog, headers, waitTime, option...)
 	if err != nil {
 		return nil, err
 	}
@@ -156,4 +158,20 @@ func parseJsData(u, scheme, host, nowUrl string) string {
 	nowUrl = nowUrl[:strings.LastIndex(nowUrl, "/")]
 	return nowUrl + "/" + u
 
+}
+func cleanOnclickUrl(target []string) []string {
+	var newUrls = []string{}
+	for _, v := range target {
+		if replace(v, "", "#", "\n", " ") != "" {
+			newUrls = append(newUrls, v)
+		}
+	}
+	return newUrls
+}
+
+func replace(rawStr string, replaceStr ...string) string {
+	for _, v := range replaceStr {
+		rawStr = strings.ReplaceAll(rawStr, v, "")
+	}
+	return rawStr
 }

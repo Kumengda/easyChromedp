@@ -10,12 +10,12 @@ import (
 func main() {
 
 	templates, err := template.NewChromedpTemplates(
-		"http://127.0.0.1:8765/vul/unsafeupload/clientcheck.php",
+		"http://127.0.0.1:8089/WebGoat/start.mvc",
 		10,
 		true,
-		5,
-		map[string]interface{}{"Cookie": "PHPSESSID=0orsrs37tjva2opouppr9agvn1; security=low;"},
-		chromedp.Flag("headless", true),
+		1,
+		map[string]interface{}{"Cookie": "JSESSIONID=rYbGaUnEzJk1n_vJvC8qVpFg7EeQc0lrQtMbjBSa"},
+		chromedp.Flag("headless", false),
 		chromedp.DisableGPU,
 		chromedp.NoDefaultBrowserCheck,
 	)
@@ -42,8 +42,6 @@ func main() {
 	}
 
 	for _, v := range origin2 {
-		if v.IsForm {
-			MainInsp.Print(Json(v))
-		}
+		MainInsp.Print(Json(v))
 	}
 }
