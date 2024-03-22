@@ -152,12 +152,15 @@ func parseJsData(u, scheme, host, nowUrl string) string {
 	if strings.HasPrefix(u, "/") {
 		return scheme + "://" + host + u
 	}
+	if strings.HasPrefix(u, "#") {
+		return nowUrl + u
+
+	}
 	if strings.HasPrefix(u, "http") {
 		return u
 	}
 	nowUrl = nowUrl[:strings.LastIndex(nowUrl, "/")]
 	return nowUrl + "/" + u
-
 }
 func cleanOnclickUrl(target []string) []string {
 	var newUrls = []string{}
