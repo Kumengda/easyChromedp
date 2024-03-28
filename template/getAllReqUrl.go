@@ -111,6 +111,9 @@ func getWebsiteAllHrefByJs(timeout int, websites string, printLog bool, headers 
 		var fromUrl string
 		isFileUpload := false
 		for _, vv := range v.FormData {
+			if vv.Name == "" {
+				continue
+			}
 			if vv.Type == "file" {
 				isFileUpload = true
 			}

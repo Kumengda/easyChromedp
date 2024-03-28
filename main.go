@@ -10,11 +10,11 @@ import (
 func main() {
 
 	templates, err := template.NewChromedpTemplates(
-		"http://127.0.0.1:8089/WebGoat/start.mvc",
+		"http://127.0.0.1:8089/WebGoat/start.mvc#lesson/XXE.lesson/10",
 		10,
 		true,
 		1,
-		map[string]interface{}{"Cookie": "JSESSIONID=rYbGaUnEzJk1n_vJvC8qVpFg7EeQc0lrQtMbjBSa"},
+		map[string]interface{}{"Cookie": "JSESSIONID=iU6w1WqJJSYb_fQE6yFDYt5jbgb5vtMK0PjT6-fT"},
 		chromedp.Flag("headless", false),
 		chromedp.DisableGPU,
 		chromedp.NoDefaultBrowserCheck,
@@ -44,4 +44,5 @@ func main() {
 	for _, v := range origin2 {
 		MainInsp.Print(Json(v))
 	}
+
 }
