@@ -5,6 +5,17 @@ import (
 	"strings"
 )
 
+var typeList = []string{
+	"button",
+	"checkbox",
+	"color",
+	"radio",
+	"range",
+	"reset",
+	"search",
+	"submit",
+}
+
 func sameOriginUrlFilter(websites string, allUrl interface{}) []string {
 	var sameOriginPrefix []string
 	var sameOriginUrl []string

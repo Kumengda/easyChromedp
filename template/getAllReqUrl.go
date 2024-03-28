@@ -111,7 +111,7 @@ func getWebsiteAllHrefByJs(timeout int, websites string, printLog bool, headers 
 		var fromUrl string
 		isFileUpload := false
 		for _, vv := range v.FormData {
-			if vv.Name == "" {
+			if vv.Name == "" || !checkInputType(vv.Type) {
 				continue
 			}
 			if vv.Type == "file" {
@@ -180,4 +180,14 @@ func replace(rawStr string, replaceStr ...string) string {
 		rawStr = strings.ReplaceAll(rawStr, v, "")
 	}
 	return rawStr
+}
+
+func checkInputType(t string) bool {
+	check := strings.ToLower(t)
+	for _, v := range typeList {
+		if check == v {
+			return false
+		}
+	}
+	return true
 }
