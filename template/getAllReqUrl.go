@@ -109,6 +109,7 @@ func getWebsiteAllHrefByJs(timeout int, websites string, printLog bool, headers 
 	}
 	for _, v := range fromDatas {
 		var fromUrl string
+		var newFormData []FormData
 		isFileUpload := false
 		for _, vv := range v.FormData {
 			if vv.Name == "" || !checkInputType(vv.Type) {
@@ -117,6 +118,7 @@ func getWebsiteAllHrefByJs(timeout int, websites string, printLog bool, headers 
 			if vv.Type == "file" {
 				isFileUpload = true
 			}
+			newFormData = append(newFormData, vv)
 		}
 		if v.Action == "#" || v.Action == "/" || v.Action == "" {
 			fromUrl = websites
@@ -127,7 +129,7 @@ func getWebsiteAllHrefByJs(timeout int, websites string, printLog bool, headers 
 			Url:          fromUrl,
 			Method:       strings.ToUpper(v.Method),
 			IsForm:       true,
-			Param:        v.FormData,
+			Param:        newFormData,
 			IsFileUpload: isFileUpload,
 		})
 	}
