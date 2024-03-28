@@ -102,7 +102,7 @@ func getWebsiteAllHrefByJs(timeout int, websites string, printLog bool, headers 
 	onclickUrl = utils.RemoveDuplicateStrings(onclickUrl)
 	for _, u := range onclickUrl {
 		allOnclickUrl = append(allOnclickUrl, JsRes{
-			Url:    parseJsData(u, scheme, host, websites),
+			Url:    parseJsData(u, scheme, host, websites, false),
 			Method: "GET",
 			Param:  nil,
 		})
@@ -123,7 +123,7 @@ func getWebsiteAllHrefByJs(timeout int, websites string, printLog bool, headers 
 		if v.Action == "#" || v.Action == "/" || v.Action == "" {
 			fromUrl = websites
 		} else {
-			fromUrl = parseJsData(v.Action, scheme, host, websites)
+			fromUrl = parseJsData(v.Action, scheme, host, websites, true)
 		}
 		allOnclickUrl = append(allOnclickUrl, JsRes{
 			Url:          fromUrl,
@@ -146,7 +146,7 @@ func getWebsiteAllHrefByJsWithSameOrigin(timeout int, websites string, printLog 
 	return sameOriginUrl, nil
 }
 
-func parseJsData(u, scheme, host, nowUrl string) string {
+func parseJsData(u, scheme, host, nowUrl string, isForm bool) string {
 
 	//if strings.Contains(u, "?") {
 	//	u = u[:strings.Index(u, "?")]
@@ -163,6 +163,9 @@ func parseJsData(u, scheme, host, nowUrl string) string {
 	}
 	if strings.HasPrefix(u, "http") {
 		return u
+	}
+	if isForm {
+		nowUrl = nowUrl[:strings.Index(nowUrl, "#")]
 	}
 	nowUrl = nowUrl[:strings.LastIndex(nowUrl, "/")]
 	return nowUrl + "/" + u
