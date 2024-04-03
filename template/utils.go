@@ -13,7 +13,6 @@ var typeList = []string{
 	"range",
 	"reset",
 	"search",
-	"submit",
 }
 
 func sameOriginUrlFilter(websites string, allUrl interface{}) []string {

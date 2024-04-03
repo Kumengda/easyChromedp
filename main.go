@@ -10,7 +10,7 @@ import (
 func main() {
 
 	templates, err := template.NewChromedpTemplates(
-		"http://127.0.0.1:8089/WebGoat/start.mvc#lesson/SqlInjectionMitigations.lesson/8",
+		"http://127.0.0.1:8765/vul/unsafeupload/clientcheck.php",
 		10,
 		true,
 		1,
