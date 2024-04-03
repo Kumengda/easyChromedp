@@ -164,7 +164,7 @@ func parseJsData(u, scheme, host, nowUrl string, isForm bool) string {
 	if strings.HasPrefix(u, "http") {
 		return u
 	}
-	if isForm {
+	if isForm && strings.Contains(nowUrl, "#") {
 		nowUrl = nowUrl[:strings.Index(nowUrl, "#")]
 	}
 	nowUrl = nowUrl[:strings.LastIndex(nowUrl, "/")]
