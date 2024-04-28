@@ -45,12 +45,12 @@ forms.forEach(function(form) {
         oneData.name = name;
         oneData.value=value;
         oneData.type=type;
+		oneData.enctype = enctype;
         formDataList.push(oneData);
     });
 
     // 将表单信息放入列表
     var formInfo = {
-		enctype: enctype,
         action: action,
         method: method,
         formData: formDataList
