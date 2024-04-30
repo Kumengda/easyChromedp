@@ -15,16 +15,12 @@ type Chrome struct {
 	cancels     []context.CancelFunc
 	debugModule bool
 	tmpPath     string
-	timeout     int
 }
 
 func (c *Chrome) EnableDebug() {
 	c.debugModule = true
 }
-func (c *Chrome) GetTimeout() int {
-	return c.timeout
-}
-func NewChromeWithTimout(timeout int, option ...chromedp.ExecAllocatorOption) (*Chrome, error) {
+func NewChrome(option ...chromedp.ExecAllocatorOption) (*Chrome, error) {
 	var cancels []context.CancelFunc
 	absPwd, err := os.Getwd()
 	if err != nil {
@@ -37,7 +33,6 @@ func NewChromeWithTimout(timeout int, option ...chromedp.ExecAllocatorOption) (*
 	)
 	ctx, cancel := chromedp.NewContext(context.Background())
 	cancels = append(cancels, cancel)
-	ctx, _ = context.WithTimeout(ctx, time.Duration(timeout)*time.Second)
 	opts := append(chromedp.DefaultExecAllocatorOptions[:],
 		option...,
 	)
@@ -45,7 +40,7 @@ func NewChromeWithTimout(timeout int, option ...chromedp.ExecAllocatorOption) (*
 	cancels = append(cancels, cancel2)
 	ctx, _ = chromedp.NewContext(allocCtx)
 	chromedp.Run(ctx)
-	return &Chrome{ctx: ctx, cancels: cancels, tmpPath: tmpPath, timeout: timeout}, nil
+	return &Chrome{ctx: ctx, cancels: cancels, tmpPath: tmpPath}, nil
 }
 func (c *Chrome) RunWithListen(ctx context.Context, listenFun func(ev interface{}), action ...chromedp.Action) error {
 	chromedp.ListenTarget(ctx, listenFun)

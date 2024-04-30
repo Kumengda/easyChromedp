@@ -16,17 +16,18 @@ import (
 )
 
 type ChromedpTemplates struct {
+	timeout  int
 	waitTime int
 	printLog bool
 	headers  map[string]interface{}
 	chrome   *chrome.Chrome
 }
 
-func NewChromedpTemplates(printLog bool, waitTime int, headers map[string]interface{}, chrome *chrome.Chrome) (*ChromedpTemplates, error) {
-	if chrome.GetTimeout() == 0 {
+func NewChromedpTemplates(printLog bool, timeout int, waitTime int, headers map[string]interface{}, chrome *chrome.Chrome) (*ChromedpTemplates, error) {
+	if timeout == 0 {
 		return nil, errors.New("timeout must provide")
 	}
-	if waitTime >= chrome.GetTimeout() {
+	if waitTime >= timeout {
 		return nil, errors.New("waitTime不可大于等于timeout")
 	}
 	return &ChromedpTemplates{
@@ -34,10 +35,14 @@ func NewChromedpTemplates(printLog bool, waitTime int, headers map[string]interf
 		printLog: printLog,
 		headers:  headers,
 		chrome:   chrome,
+		timeout:  timeout,
 	}, nil
 }
 
-func (t *ChromedpTemplates) GetWebsiteAllReq(ctx context.Context, websites string) ([]string, error) {
+func (t *ChromedpTemplates) GetWebsiteAllReq(websites string) ([]string, error) {
+	ctx, _ := context.WithTimeout(t.chrome.GetContext(), time.Duration(t.timeout)*time.Second)
+	ctx, cancelFunc := chromedp.NewContext(ctx)
+	defer cancelFunc()
 	_, err := url.Parse(websites)
 	if err != nil {
 		return nil, err
@@ -67,16 +72,21 @@ func (t *ChromedpTemplates) GetWebsiteAllReq(ctx context.Context, websites strin
 	return allReqUrl, nil
 }
 
-func (t *ChromedpTemplates) GetWebsiteAllReqWithsameOrigin(ctx context.Context, websites string) ([]string, error) {
-	allReqUrl, err := t.GetWebsiteAllReq(ctx, websites)
-	if err != nil {
-		return nil, err
-	}
-	sameOriginUrl := sameOriginUrlFilter(websites, allReqUrl)
-	return utils.RemoveDuplicateStrings(sameOriginUrl), nil
-}
+//func (t *ChromedpTemplates) GetWebsiteAllReqWithsameOrigin(websites string) ([]string, error) {
+//	ctx, _ := context.WithTimeout(t.chrome.GetContext(), time.Duration(t.timeout)*time.Second)
+//
+//	allReqUrl, err := t.GetWebsiteAllReq(ctx, websites)
+//	if err != nil {
+//		return nil, err
+//	}
+//	sameOriginUrl := sameOriginUrlFilter(websites, allReqUrl)
+//	return utils.RemoveDuplicateStrings(sameOriginUrl), nil
+//}
 
-func (t *ChromedpTemplates) GetWebsiteAllHrefByJs(ctx context.Context, websites string) ([]JsRes, error) {
+func (t *ChromedpTemplates) GetWebsiteAllHrefByJs(websites string) ([]JsRes, error) {
+	ctx, _ := context.WithTimeout(t.chrome.GetContext(), time.Duration(t.timeout)*time.Second)
+	ctx, cancelFunc := chromedp.NewContext(ctx)
+	defer cancelFunc()
 	var allOnclickUrl []JsRes
 	parse, err := url.Parse(websites)
 	if err != nil {
@@ -138,11 +148,13 @@ func (t *ChromedpTemplates) GetWebsiteAllHrefByJs(ctx context.Context, websites 
 	return allOnclickUrl, nil
 }
 
-func (t *ChromedpTemplates) GetWebsiteAllHrefByJsWithSameOrigin(ctx context.Context, websites string) ([]string, error) {
-	allHref, err := t.GetWebsiteAllHrefByJs(ctx, websites)
-	if err != nil {
-		return nil, err
-	}
-	sameOriginUrl := sameOriginUrlFilter(websites, allHref)
-	return sameOriginUrl, nil
-}
+//func (t *ChromedpTemplates) GetWebsiteAllHrefByJsWithSameOrigin( websites string) ([]string, error) {
+//	ctx, cancel := context.WithTimeout(ctx, time.Duration(t.timeout)*time.Second)
+//	allHref, err := t.GetWebsiteAllHrefByJs(websites)
+//	if err != nil {
+//		return nil, err
+//	}
+//	sameOriginUrl := sameOriginUrlFilter(websites, allHref)
+//	cancel()
+//	return sameOriginUrl, nil
+//}
