@@ -13,12 +13,15 @@ import (
 type Chrome struct {
 	ctx         context.Context
 	cancels     []context.CancelFunc
-	debugModule bool
 	tmpPath     string
+	debugModule bool
 }
 
 func (c *Chrome) EnableDebug() {
 	c.debugModule = true
+}
+func (c *Chrome) GetTmpPath() string {
+	return c.tmpPath
 }
 func NewChrome(option ...chromedp.ExecAllocatorOption) (*Chrome, error) {
 	var cancels []context.CancelFunc

@@ -69,7 +69,7 @@ func (t *ChromedpTemplates) GetWebsiteAllReq(websites string) ([]string, error) 
 		network.SetExtraHTTPHeaders(t.headers),
 		chromedp.Navigate(websites),
 		chromedp.Sleep(time.Duration(t.waitTime)*time.Second),
-		browser.SetDownloadBehavior("deny"),
+		browser.SetDownloadBehavior(browser.SetDownloadBehaviorBehaviorDeny).WithDownloadPath(t.chrome.GetTmpPath()),
 	)
 	return allReqUrl, nil
 }
@@ -107,7 +107,7 @@ func (t *ChromedpTemplates) GetWebsiteAllHrefByJs(websites string) ([]JsRes, err
 		chromedp.Sleep(time.Duration(t.waitTime)*time.Second),
 		chromedp.Evaluate(jsCode.GetAllOnclickUrl, &onclickUrl),
 		chromedp.Evaluate(jsCode.ParseFrom, &fromDatas),
-		browser.SetDownloadBehavior("deny"),
+		browser.SetDownloadBehavior(browser.SetDownloadBehaviorBehaviorDeny).WithDownloadPath(t.chrome.GetTmpPath()),
 	)
 
 	if err != nil {
