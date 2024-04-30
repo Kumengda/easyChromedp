@@ -15,12 +15,15 @@ type Chrome struct {
 	cancels     []context.CancelFunc
 	debugModule bool
 	tmpPath     string
+	timeout     int
 }
 
 func (c *Chrome) EnableDebug() {
 	c.debugModule = true
 }
-
+func (c *Chrome) GetTimeout() int {
+	return c.timeout
+}
 func NewChromeWithTimout(timeout int, option ...chromedp.ExecAllocatorOption) (*Chrome, error) {
 	var cancels []context.CancelFunc
 	absPwd, err := os.Getwd()
@@ -41,11 +44,12 @@ func NewChromeWithTimout(timeout int, option ...chromedp.ExecAllocatorOption) (*
 	allocCtx, cancel2 := chromedp.NewExecAllocator(ctx, opts...)
 	cancels = append(cancels, cancel2)
 	ctx, _ = chromedp.NewContext(allocCtx)
-	return &Chrome{ctx: ctx, cancels: cancels, tmpPath: tmpPath}, nil
+	chromedp.Run(ctx)
+	return &Chrome{ctx: ctx, cancels: cancels, tmpPath: tmpPath, timeout: timeout}, nil
 }
-func (c *Chrome) RunWithListen(listenFun func(ev interface{}), action ...chromedp.Action) error {
-	chromedp.ListenTarget(c.ctx, listenFun)
-	err := chromedp.Run(c.ctx,
+func (c *Chrome) RunWithListen(ctx context.Context, listenFun func(ev interface{}), action ...chromedp.Action) error {
+	chromedp.ListenTarget(ctx, listenFun)
+	err := chromedp.Run(ctx,
 		action...,
 	)
 	if err != nil {
@@ -57,8 +61,8 @@ func (c *Chrome) RunWithListen(listenFun func(ev interface{}), action ...chromed
 func (c *Chrome) GetContext() context.Context {
 	return c.ctx
 }
-func (c *Chrome) RunWithOutListen(action ...chromedp.Action) error {
-	err := chromedp.Run(c.ctx,
+func (c *Chrome) RunWithOutListen(ctx context.Context, action ...chromedp.Action) error {
+	err := chromedp.Run(ctx,
 		action...,
 	)
 	if err != nil {

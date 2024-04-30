@@ -2,22 +2,25 @@ package main
 
 import (
 	"fmt"
-	. "github.com/Kumengda/easyChromedp/runtime"
+	"github.com/Kumengda/easyChromedp/chrome"
+	//. "github.com/Kumengda/easyChromedp/runtime"
 	"github.com/Kumengda/easyChromedp/template"
 	"github.com/chromedp/chromedp"
 )
 
 func main() {
-
-	templates, err := template.NewChromedpTemplates(
-		"https://127.0.0.1:8765/vul/sqli/sqli_header/sqli_header_login.php",
+	myChrome, err := chrome.NewChromeWithTimout(
 		10,
-		true,
-		1,
-		map[string]interface{}{"Cookie": "JSESSIONID=iU6w1WqJJSYb_fQE6yFDYt5jbgb5vtMK0PjT6-fT"},
 		chromedp.Flag("headless", false),
 		chromedp.DisableGPU,
 		chromedp.NoDefaultBrowserCheck,
+	)
+
+	templates, err := template.NewChromedpTemplates(
+		true,
+		2,
+		map[string]interface{}{"Cookie": "JSESSIONID=iU6w1WqJJSYb_fQE6yFDYt5jbgb5vtMK0PjT6-fT"},
+		myChrome,
 	)
 
 	if err != nil {
@@ -25,24 +28,16 @@ func main() {
 		return
 	}
 
-	//origin, err := templates.GetWebsiteAllHrefByJsWithSameOrigin()
-	//if err != nil {
-	//	fmt.Println(err)
-	//	return
-	//}
-	//for _, v := range origin {
-	//	fmt.Println(v)
-	//}
+	ctx, can := chromedp.NewContext(myChrome.GetContext())
 
-	origin2, err := templates.GetWebsiteAllHrefByJs()
-
+	origin, err := templates.GetWebsiteAllHrefByJsWithSameOrigin(ctx, "http://127.0.0.1:8765")
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-
-	for _, v := range origin2 {
-		MainInsp.Print(Json(v))
+	for _, v := range origin {
+		fmt.Println(v)
 	}
-
+	can()
+	myChrome.Close()
 }
