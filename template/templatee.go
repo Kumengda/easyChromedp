@@ -8,6 +8,7 @@ import (
 	"github.com/Kumengda/easyChromedp/jsCode"
 	. "github.com/Kumengda/easyChromedp/runtime"
 	"github.com/Kumengda/easyChromedp/utils"
+	"github.com/chromedp/cdproto/browser"
 	"github.com/chromedp/cdproto/network"
 	"github.com/chromedp/chromedp"
 	"net/url"
@@ -68,6 +69,7 @@ func (t *ChromedpTemplates) GetWebsiteAllReq(websites string) ([]string, error) 
 		network.SetExtraHTTPHeaders(t.headers),
 		chromedp.Navigate(websites),
 		chromedp.Sleep(time.Duration(t.waitTime)*time.Second),
+		browser.SetDownloadBehavior("deny"),
 	)
 	return allReqUrl, nil
 }
@@ -105,6 +107,7 @@ func (t *ChromedpTemplates) GetWebsiteAllHrefByJs(websites string) ([]JsRes, err
 		chromedp.Sleep(time.Duration(t.waitTime)*time.Second),
 		chromedp.Evaluate(jsCode.GetAllOnclickUrl, &onclickUrl),
 		chromedp.Evaluate(jsCode.ParseFrom, &fromDatas),
+		browser.SetDownloadBehavior("deny"),
 	)
 
 	if err != nil {
