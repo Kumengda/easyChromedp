@@ -17,14 +17,14 @@ import (
 )
 
 type ChromedpTemplates struct {
-	timeout  int
-	waitTime int
+	timeout  time.Duration
+	waitTime time.Duration
 	printLog bool
 	headers  map[string]interface{}
 	chrome   *chrome.Chrome
 }
 
-func NewChromedpTemplates(printLog bool, timeout int, waitTime int, headers map[string]interface{}, chrome *chrome.Chrome) (*ChromedpTemplates, error) {
+func NewChromedpTemplates(printLog bool, timeout time.Duration, waitTime time.Duration, headers map[string]interface{}, chrome *chrome.Chrome) (*ChromedpTemplates, error) {
 	if timeout == 0 {
 		return nil, errors.New("timeout must provide")
 	}
@@ -41,7 +41,7 @@ func NewChromedpTemplates(printLog bool, timeout int, waitTime int, headers map[
 }
 
 func (t *ChromedpTemplates) GetWebsiteAllReq(websites string) ([]string, error) {
-	ctx, _ := context.WithTimeout(t.chrome.GetContext(), time.Duration(t.timeout)*time.Second)
+	ctx, _ := context.WithTimeout(t.chrome.GetContext(), t.timeout)
 	ctx, cancelFunc := chromedp.NewContext(ctx)
 	defer cancelFunc()
 	_, err := url.Parse(websites)
@@ -68,7 +68,7 @@ func (t *ChromedpTemplates) GetWebsiteAllReq(websites string) ([]string, error) 
 		network.Enable(),
 		network.SetExtraHTTPHeaders(t.headers),
 		chromedp.Navigate(websites),
-		chromedp.Sleep(time.Duration(t.waitTime)*time.Second),
+		chromedp.Sleep(t.waitTime),
 		browser.SetDownloadBehavior(browser.SetDownloadBehaviorBehaviorDeny).WithDownloadPath(t.chrome.GetTmpPath()),
 	)
 	return allReqUrl, nil
@@ -86,7 +86,7 @@ func (t *ChromedpTemplates) GetWebsiteAllReq(websites string) ([]string, error) 
 //}
 
 func (t *ChromedpTemplates) GetWebsiteAllHrefByJs(websites string) ([]JsRes, error) {
-	ctx, _ := context.WithTimeout(t.chrome.GetContext(), time.Duration(t.timeout)*time.Second)
+	ctx, _ := context.WithTimeout(t.chrome.GetContext(), t.timeout)
 	ctx, cancelFunc := chromedp.NewContext(ctx)
 	defer cancelFunc()
 	var allOnclickUrl []JsRes
@@ -104,7 +104,7 @@ func (t *ChromedpTemplates) GetWebsiteAllHrefByJs(websites string) ([]JsRes, err
 		network.Enable(),
 		network.SetExtraHTTPHeaders(t.headers),
 		chromedp.Navigate(websites),
-		chromedp.Sleep(time.Duration(t.waitTime)*time.Second),
+		chromedp.Sleep(t.waitTime),
 		chromedp.Evaluate(jsCode.GetAllOnclickUrl, &onclickUrl),
 		chromedp.Evaluate(jsCode.ParseFrom, &fromDatas),
 		browser.SetDownloadBehavior(browser.SetDownloadBehaviorBehaviorDeny).WithDownloadPath(t.chrome.GetTmpPath()),
