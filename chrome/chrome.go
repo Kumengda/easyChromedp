@@ -2,6 +2,7 @@ package chrome
 
 import (
 	"context"
+	"github.com/B9O2/Inspector/useful"
 	. "github.com/Kumengda/easyChromedp/runtime"
 	"github.com/Kumengda/easyChromedp/utils"
 	"github.com/chromedp/chromedp"
@@ -75,16 +76,16 @@ func (c *Chrome) Close() {
 	for {
 		time.Sleep(1 * time.Second)
 		if c.debugModule {
-			MainInsp.Print(LEVEL_DEBUG, Text("尝试删除文件"+c.tmpPath))
+			MainInsp.Print(useful.DEBUG, useful.Text("尝试删除文件"+c.tmpPath))
 		}
 		err := os.RemoveAll(c.tmpPath)
 		if err != nil {
 			if c.debugModule {
-				MainInsp.Print(LEVEL_DEBUG, Text("删除文件失败,即将重试"+c.tmpPath+err.Error()))
+				MainInsp.Print(useful.DEBUG, useful.Text("删除文件失败,即将重试"+c.tmpPath+err.Error()))
 			}
 		} else {
 			if c.debugModule {
-				MainInsp.Print(LEVEL_DEBUG, Text("删除文件成功"+c.tmpPath))
+				MainInsp.Print(useful.DEBUG, useful.Text("删除文件成功"+c.tmpPath))
 			}
 			break
 		}

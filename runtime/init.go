@@ -1,6 +1,6 @@
 package runtime
 
 func InitLogger() {
-	initDecoration()
+	initDecoration(true)
 
 }

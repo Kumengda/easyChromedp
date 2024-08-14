@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/B9O2/Inspector/useful"
 	"github.com/Kumengda/easyChromedp/chrome"
 	"github.com/Kumengda/easyChromedp/jsCode"
 	. "github.com/Kumengda/easyChromedp/runtime"
@@ -61,7 +62,7 @@ func (t *ChromedpTemplates) GetWebsiteAllReq(websites string) ([]string, error) 
 				allReqUrl = append(allReqUrl, reqUrl)
 			}
 			if t.printLog {
-				MainInsp.Print(LEVEL_DEBUG, Text(fmt.Sprintf("req url %s", ev.Request.URL)))
+				MainInsp.Print(useful.DEBUG, useful.Text(fmt.Sprintf("req url %s", ev.Request.URL)))
 			}
 		}
 	},
