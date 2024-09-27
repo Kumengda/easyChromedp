@@ -64,6 +64,7 @@ func (t *ChromedpTemplates) GetWebsiteAllReq(websites string) ([]string, error) 
 			if t.printLog {
 				MainInsp.Print(useful.DEBUG, useful.Text(fmt.Sprintf("req url %s", ev.Request.URL)))
 			}
+
 		}
 	},
 		network.Enable(),
@@ -99,7 +100,7 @@ func (t *ChromedpTemplates) GetWebsiteAllHrefByJs(websites string) ([]JsRes, err
 	scheme := parse.Scheme
 	var onclickUrl []string
 
-	var fromDatas []FormDatas
+	var fromDatas []FormDataset
 	err = t.chrome.RunWithOutListen(
 		ctx,
 		network.Enable(),

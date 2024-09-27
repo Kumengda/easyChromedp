@@ -7,7 +7,7 @@ type FormData struct {
 	Value   string
 }
 
-type FormDatas struct {
+type FormDataset struct {
 	Action   string
 	Method   string
 	FormData []FormData

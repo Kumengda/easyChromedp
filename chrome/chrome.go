@@ -24,6 +24,7 @@ func (c *Chrome) EnableDebug() {
 func (c *Chrome) GetTmpPath() string {
 	return c.tmpPath
 }
+
 func NewChrome(option ...chromedp.ExecAllocatorOption) (*Chrome, error) {
 	var cancels []context.CancelFunc
 	absPwd, err := os.Getwd()
@@ -46,6 +47,7 @@ func NewChrome(option ...chromedp.ExecAllocatorOption) (*Chrome, error) {
 	chromedp.Run(ctx)
 	return &Chrome{ctx: ctx, cancels: cancels, tmpPath: tmpPath}, nil
 }
+
 func (c *Chrome) RunWithListen(ctx context.Context, listenFun func(ev interface{}), action ...chromedp.Action) error {
 	chromedp.ListenTarget(ctx, listenFun)
 	err := chromedp.Run(ctx,
@@ -57,9 +59,11 @@ func (c *Chrome) RunWithListen(ctx context.Context, listenFun func(ev interface{
 
 	return nil
 }
+
 func (c *Chrome) GetContext() context.Context {
 	return c.ctx
 }
+
 func (c *Chrome) RunWithOutListen(ctx context.Context, action ...chromedp.Action) error {
 	err := chromedp.Run(ctx,
 		action...,
@@ -69,6 +73,7 @@ func (c *Chrome) RunWithOutListen(ctx context.Context, action ...chromedp.Action
 	}
 	return nil
 }
+
 func (c *Chrome) Close() {
 	for _, v := range c.cancels {
 		v()
@@ -90,8 +95,8 @@ func (c *Chrome) Close() {
 			break
 		}
 	}
-
 }
+
 func init() {
 	InitLogger()
 }

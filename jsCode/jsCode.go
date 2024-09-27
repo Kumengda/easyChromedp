@@ -28,13 +28,11 @@ var formList = [];
 var forms = document.querySelectorAll('form');
 
 forms.forEach(function(form) {
-    // 获取表单的提交连接、提交方法和提交参数
     var action = form.getAttribute('action');
     var enctype = form.getAttribute('enctype');
-    var method = form.getAttribute('method') || 'GET'; // 默认为 GET 方法
+    var method = form.getAttribute('method') || 'GET';
     var formData = [];
 
-    // 获取表单中的每个字段的名称和值
     var inputs = form.querySelectorAll('input, textarea, select');
     var formDataList= [];
     inputs.forEach(function(input) {
@@ -49,7 +47,6 @@ forms.forEach(function(form) {
         formDataList.push(oneData);
     });
 
-    // 将表单信息放入列表
     var formInfo = {
         action: action,
         method: method,
